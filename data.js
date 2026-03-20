@@ -10,12 +10,12 @@ const experiences = [
         currency: "GHS",
         rating: 4.8,
         reviews: 42,
-        mainImage: "cocoa-farm.jpg",
+        mainImage: "1.jpg",
         images: [
-            "cocoa-farm.jpg",
-            "cocoa-drying.jpg",
-            "cocoa-workshop.jpg",
-            "farm-family.jpg",
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
         ],
         description: "Experience the art and science of cocoa farming in Ghana's heartland. Discover how cocoa beans are cultivated, fermented, and dried before they become world-class chocolate.",
         narrative: `
@@ -42,7 +42,7 @@ const experiences = [
         ],
         accommodation: "Comfortable single/double rooms in the farmhouse with shared bathroom facilities",
         included: [
-            "2 nights accommodation",
+            "1 night accommodation",
             "4 meals (local and international cuisine)",
             "All activities and materials",
             "Transportation to/from meeting point",
@@ -65,7 +65,7 @@ const experiences = [
             name: "Kofi & Ama Mensah",
             role: "Farm Owners, 3rd Generation Cocoa Farmers",
             bio: "Kofi and Ama have been managing their 50-hectare cocoa farm for 15 years. They are passionate about sharing their agricultural heritage and building bridges between farming communities and urban visitors.",
-            image: "host1.jpg"
+            image: "photo-1.jpg"
         },
         itinerary: [
             {
@@ -112,12 +112,12 @@ const experiences = [
         currency: "GHS",
         rating: 4.7,
         reviews: 38,
-        mainImage: "pineapple-farm.jpg",
+        mainImage: "5.jpg",
         images: [
-            "pineapple-farm.jpg",
-            "pineapple-harvest.jpg",
-            "juice-processing.jpg",
-            "market-scene.jpg",
+            "5.jpg",
+            "6.jpg",
+            "7.jpg",
+            "photo1.jpg",
         ],
         description: "Participate in fresh pineapple harvesting and learn traditional processing techniques used by Ghanaian farmers for centuries.",
         narrative: `
@@ -143,7 +143,7 @@ const experiences = [
         ],
         accommodation: "Clean, modern rooms with private bathrooms in the newly renovated farmhouse",
         included: [
-            "2 nights accommodation",
+            "1 night accommodation",
             "4 meals featuring farm produce",
             "All harvesting and processing activities",
             "Transportation from meeting point",
@@ -166,7 +166,7 @@ const experiences = [
             name: "Mary & Kwesi Osei",
             role: "Farm Owners, Sustainable Farming Advocates",
             bio: "Mary and Kwesi operate a 30-hectare pineapple farm using sustainable, organic methods. They are passionate educators committed to changing perceptions about African agriculture.",
-            image: "host2.jpg"
+            image: "photo-2.jpg"
         },
         itinerary: [
             {
@@ -213,12 +213,12 @@ const experiences = [
         currency: "GHS",
         rating: 4.6,
         reviews: 28,
-        mainImage: "cassava-farm.jpg",
+        mainImage: "photo2.jpg",
         images: [
-            "cassava-farm.jpg",
-            "cassava-processing.jpg",
-            "fufu-making.jpg",
-            "community-meal.jpg",
+            "photo2.jpg",
+            "photo3.jpg",
+            "photo4.jpg",
+            "photo-3.jpg",
         ],
         description: "Learn the traditional art of processing cassava into fufu and other staple foods while connecting with farming families.",
         narrative: `
@@ -244,7 +244,7 @@ const experiences = [
         ],
         accommodation: "Traditional farmhouse accommodation with modern amenities",
         included: [
-            "2 nights accommodation",
+            "1 night accommodation",
             "4 meals featuring cassava dishes",
             "All agricultural activities",
             "Transportation from meeting point",
@@ -267,7 +267,7 @@ const experiences = [
             name: "Abena & Yaw Asante",
             role: "Agricultural Educators",
             bio: "Abena and Yaw have dedicated their lives to preserving traditional African agricultural practices and teaching both locals and visitors about sustainable food production.",
-            image: "host3.jpg"
+            image: "photo-4.jpg"
         },
         itinerary: [
             {
@@ -354,7 +354,7 @@ function initializeExperiences() {
     container.innerHTML = experiences.map(exp => `
         <div class="experience-card">
             <div class="experience-image">
-                <img src="${exp.mainImage}" alt="${exp.title}" onerror="this.src='experience-placeholder.jpg'">
+                <img src="${exp.mainImage}" alt="${exp.title}" onerror="this.src='experience-placeholder.svg'">
                 <span class="price-badge">₵${exp.price}</span>
             </div>
             <div class="experience-info">
@@ -400,7 +400,13 @@ const Storage = {
     },
     
     getUser: () => {
-        return JSON.parse(localStorage.getItem('user') || JSON.stringify(mockUser));
+        const raw = localStorage.getItem('user');
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return null;
+        }
     },
     
     clearBookings: () => {

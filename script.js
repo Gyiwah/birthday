@@ -46,12 +46,12 @@ function viewExperienceDetail(experienceId) {
             <!-- Gallery Section -->
             <div class="detail-gallery">
                 <div class="main-image">
-                    <img id="mainImageDisplay" src="${experience.mainImage}" alt="${experience.title}" onerror="this.src='experience-placeholder.jpg'">
+                    <img id="mainImageDisplay" src="${experience.mainImage}" alt="${experience.title}" onerror="this.src='experience-placeholder.svg'">
                 </div>
                 <div class="thumbnail-gallery">
                     ${experience.images.map((img, idx) => `
-                        <img src="${img}" alt="View ${idx + 1}" onclick="updateMainImage('${img}')" 
-                             class="${idx === 0 ? 'active' : ''}" onerror="this.src='experience-placeholder.jpg'">
+                        <img src="${img}" alt="View ${idx + 1}" onclick="updateMainImage('${img}', this)" 
+                             class="${idx === 0 ? 'active' : ''}" onerror="this.src='experience-placeholder.svg'">
                     `).join('')}
                 </div>
             </div>
@@ -156,12 +156,13 @@ function viewExperienceDetail(experienceId) {
     openModal('experienceModal');
 }
 
-function updateMainImage(imageSrc) {
-    document.getElementById('mainImageDisplay').src = imageSrc;
+function updateMainImage(imageSrc, thumbEl) {
+    const main = document.getElementById('mainImageDisplay');
+    if (main) main.src = imageSrc;
     document.querySelectorAll('.thumbnail-gallery img').forEach(img => {
         img.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (thumbEl) thumbEl.classList.add('active');
 }
 
 // ============= BOOKING FLOW =============
@@ -198,6 +199,7 @@ function showBookingStep(step) {
     if (step === 1) {
         // Date & Guest Selection
         const experience = getExperienceById(booking.experienceId);
+        const selGuests = booking.numGuests || experience.minGuests;
         html += `
             <div class="booking-step">
                 <h2>Select Your Dates & Guests</h2>
@@ -206,7 +208,7 @@ function showBookingStep(step) {
                     <select id="checkInDate" onchange="updateBookingSummary()">
                         <option value="">Select a date...</option>
                         ${experience.availableDates.map(date => `
-                            <option value="${date}">${formatDate(date)}</option>
+                            <option value="${date}" ${booking.checkInDate === date ? 'selected' : ''}>${formatDate(date)}</option>
                         `).join('')}
                     </select>
                 </div>
@@ -214,9 +216,10 @@ function showBookingStep(step) {
                 <div class="form-group">
                     <label>Number of Guests</label>
                     <select id="numGuests" onchange="updateBookingSummary()">
-                        ${Array.from({length: experience.maxGuests - experience.minGuests + 1}, (_, i) => 
-                            `<option value="${i + experience.minGuests}">${i + experience.minGuests} guest${i + experience.minGuests > 1 ? 's' : ''}</option>`
-                        ).join('')}
+                        ${Array.from({length: experience.maxGuests - experience.minGuests + 1}, (_, i) => {
+                            const n = i + experience.minGuests;
+                            return `<option value="${n}" ${Number(selGuests) === n ? 'selected' : ''}>${n} guest${n > 1 ? 's' : ''}</option>`;
+                        }).join('')}
                     </select>
                 </div>
                 
@@ -224,7 +227,7 @@ function showBookingStep(step) {
                     <h3>Price Breakdown</h3>
                     <div class="summary-line">
                         <span>Price per person:</span>
-                        <span>$${experience.price}</span>
+                        <span>₵${experience.price}</span>
                     </div>
                     <div class="summary-line">
                         <span id="guestCount">1 guest</span>
@@ -244,37 +247,38 @@ function showBookingStep(step) {
         `;
     } else if (step === 2) {
         // Guest Details
+        const b = booking;
         html += `
             <div class="booking-step">
                 <h2>Guest Details</h2>
                 <div class="form-group">
                     <label>First Name *</label>
-                    <input type="text" id="firstName" placeholder="Your first name">
+                    <input type="text" id="firstName" placeholder="Your first name" value="${escAttr(b.firstName)}">
                 </div>
                 
                 <div class="form-group">
                     <label>Last Name *</label>
-                    <input type="text" id="lastName" placeholder="Your last name">
+                    <input type="text" id="lastName" placeholder="Your last name" value="${escAttr(b.lastName)}">
                 </div>
                 
                 <div class="form-group">
                     <label>Email Address *</label>
-                    <input type="email" id="email" placeholder="your.email@example.com">
+                    <input type="email" id="email" placeholder="your.email@example.com" value="${escAttr(b.email)}">
                 </div>
                 
                 <div class="form-group">
                     <label>Phone Number *</label>
-                    <input type="tel" id="phone" placeholder="+233 XXX XXX XXX">
+                    <input type="tel" id="phone" placeholder="+233 XXX XXX XXX" value="${escAttr(b.phone)}">
                 </div>
                 
                 <div class="form-group">
                     <label>Country *</label>
-                    <input type="text" id="country" placeholder="Your country">
+                    <input type="text" id="country" placeholder="Your country" value="${escAttr(b.country)}">
                 </div>
                 
                 <div class="form-group">
                     <label>Special Requests (e.g., dietary preferences)</label>
-                    <textarea id="specialRequests" placeholder="Tell us about any special needs..." rows="4"></textarea>
+                    <textarea id="specialRequests" placeholder="Tell us about any special needs..." rows="4">${escHtml(b.specialRequests)}</textarea>
                 </div>
                 
                 <div class="booking-buttons">
@@ -287,7 +291,12 @@ function showBookingStep(step) {
         // Review Booking
         const experience = getExperienceById(booking.experienceId);
         const checkInDate = document.getElementById('checkInDate')?.value || booking.checkInDate;
-        const numGuests = parseInt(document.getElementById('numGuests')?.value || 1);
+        const numGuests = parseInt(document.getElementById('numGuests')?.value || String(booking.numGuests || 1), 10);
+        const rvFirst = booking.firstName || document.getElementById('firstName')?.value || '';
+        const rvLast = booking.lastName || document.getElementById('lastName')?.value || '';
+        const rvEmail = booking.email || document.getElementById('email')?.value || '';
+        const rvPhone = booking.phone || document.getElementById('phone')?.value || '';
+        const rvCountry = booking.country || document.getElementById('country')?.value || '';
         
         html += `
             <div class="booking-step">
@@ -303,10 +312,10 @@ function showBookingStep(step) {
                 
                 <div class="review-section">
                     <h3>Guest Information</h3>
-                    <p><strong>Name:</strong> ${document.getElementById('firstName')?.value} ${document.getElementById('lastName')?.value}</p>
-                    <p><strong>Email:</strong> ${document.getElementById('email')?.value}</p>
-                    <p><strong>Phone:</strong> ${document.getElementById('phone')?.value}</p>
-                    <p><strong>Country:</strong> ${document.getElementById('country')?.value}</p>
+                    <p><strong>Name:</strong> ${rvFirst} ${rvLast}</p>
+                    <p><strong>Email:</strong> ${rvEmail}</p>
+                    <p><strong>Phone:</strong> ${rvPhone}</p>
+                    <p><strong>Country:</strong> ${rvCountry}</p>
                 </div>
                 
                 <div class="review-section">
@@ -373,6 +382,9 @@ function showBookingStep(step) {
     
     container.innerHTML = html;
     booking.currentStep = step;
+    if (step === 1) {
+        updateBookingSummary();
+    }
 }
 
 function updateBookingSummary() {
@@ -477,8 +489,9 @@ function proceedToStep(step) {
         const lastName = document.getElementById('lastName')?.value;
         const email = document.getElementById('email')?.value;
         const phone = document.getElementById('phone')?.value;
+        const country = document.getElementById('country')?.value;
         
-        if (!firstName || !lastName || !email || !phone) {
+        if (!firstName || !lastName || !email || !phone || !country?.trim()) {
             alert('Please fill in all required fields');
             return;
         }
@@ -487,6 +500,12 @@ function proceedToStep(step) {
             alert('Please enter a valid email address');
             return;
         }
+        window.currentBooking.firstName = firstName.trim();
+        window.currentBooking.lastName = lastName.trim();
+        window.currentBooking.email = email.trim();
+        window.currentBooking.phone = phone.trim();
+        window.currentBooking.country = country.trim();
+        window.currentBooking.specialRequests = (document.getElementById('specialRequests')?.value || '').trim();
     }
     
     showBookingStep(step);
@@ -494,16 +513,20 @@ function proceedToStep(step) {
 
 function completeBooking() {
     const booking = window.currentBooking;
-    const firstName = document.getElementById('firstName')?.value;
-    const lastName = document.getElementById('lastName')?.value;
-    const email = document.getElementById('email')?.value;
-    const phone = document.getElementById('phone')?.value;
-    const country = document.getElementById('country')?.value;
-    const specialRequests = document.getElementById('specialRequests')?.value || '';
+    const firstName = booking.firstName || document.getElementById('firstName')?.value;
+    const lastName = booking.lastName || document.getElementById('lastName')?.value;
+    const email = booking.email || document.getElementById('email')?.value;
+    const phone = booking.phone || document.getElementById('phone')?.value;
+    const country = booking.country || document.getElementById('country')?.value;
+    const specialRequests = booking.specialRequests ?? document.getElementById('specialRequests')?.value ?? '';
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
     
     if (!paymentMethod) {
         alert('Please select a payment method');
+        return;
+    }
+    if (!firstName || !lastName || !email || !phone || !String(country).trim()) {
+        alert('Guest details are missing. Please go back and complete the form.');
         return;
     }
     
@@ -602,6 +625,20 @@ window.onclick = function(event) {
 };
 
 // ============= UTILITY FUNCTIONS =============
+function escAttr(s) {
+    return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;');
+}
+
+function escHtml(s) {
+    return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 function formatDate(dateStr) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString('en-US', options);
@@ -614,12 +651,11 @@ function formatPrice(price, decimals = 2) {
 // ============= DASHBOARD FUNCTIONS (loaded from dashboard.html) =============
 function initializeDashboard() {
     const user = Storage.getUser();
-    if (!user) return;
-    
-    if (document.getElementById('userName')) {
-        document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+    const nameEl = document.getElementById('userName');
+    if (nameEl) {
+        nameEl.textContent = user ? `${user.firstName} ${user.lastName}` : 'Guest';
     }
-    
+
     const bookings = Storage.getBookings();
     displayBookings(bookings);
 }
@@ -664,7 +700,15 @@ function cancelBooking(bookingId) {
         bookings[bookingIndex].status = 'cancelled';
         localStorage.setItem('bookings', JSON.stringify(bookings));
         alert('Booking cancelled successfully.');
-        location.reload();
+        const container = document.getElementById('bookingsContainer');
+        if (container) {
+            displayBookings(bookings);
+        } else {
+            // For admin flow, reload booking table and analytics without a full refresh
+            if (typeof initializeAdmin === 'function') {
+                initializeAdmin();
+            }
+        }
     }
 }
 
@@ -673,7 +717,7 @@ function viewBookingDetails(bookingId) {
     const booking = bookings.find(b => b.id === bookingId);
     if (!booking) return;
     
-    alert(`Booking Details for ${booking.experienceName}\n\nConfirmation: ${booking.confirmationNumber}\nCheck-in: ${formatDate(booking.checkInDate)}\nGuests: ${booking.numGuests}\nTotal: $${booking.totalPrice}\nStatus: ${booking.status}`);
+    alert(`Booking Details for ${booking.experienceName}\n\nConfirmation: ${booking.confirmationNumber}\nCheck-in: ${formatDate(booking.checkInDate)}\nGuests: ${booking.numGuests}\nTotal: ${formatPrice(booking.totalPrice)}\nStatus: ${booking.status}`);
 }
 
 // ============= ADMIN FUNCTIONS =============
@@ -731,11 +775,31 @@ function loadAdminAnalytics() {
     const bookings = Storage.getBookings();
     const totalRevenue = bookings.reduce((sum, b) => sum + b.totalPrice, 0);
     const totalBookings = bookings.length;
-    const topExperience = bookings.length > 0 ? bookings[0].experienceName : 'N/A';
+    let topExperience = 'N/A';
+    if (bookings.length > 0) {
+        const counts = {};
+        for (const b of bookings) {
+            const name = b.experienceName || 'Unknown';
+            counts[name] = (counts[name] || 0) + 1;
+        }
+        topExperience = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+    }
     
     document.getElementById('totalRevenue').textContent = formatPrice(totalRevenue);
     document.getElementById('totalBookings').textContent = totalBookings;
     document.getElementById('topExperience').textContent = topExperience;
+}
+
+function clearAllData() {
+    if (!confirm('Clear all stored booking data?')) return;
+    localStorage.clear();
+    alert('All booking and user data has been cleared.');
+    if (typeof initializeAdmin === 'function') {
+        initializeAdmin();
+    }
+    if (document.getElementById('bookingsContainer')) {
+        initializeDashboard();
+    }
 }
 
 function updateBookingStatus(bookingId, newStatus) {
