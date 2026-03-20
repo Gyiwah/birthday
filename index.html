@@ -3,127 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday</title>
+    <title>Agri-Tourism - Ghana</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="site.webmanifest">
-    
+    <meta name="description" content="Discover authentic farm-stay experiences connecting urban visitors with Ghanaian farming communities.">
+    <meta property="og:title" content="Agri-Tourism Farm-Stay Experience">
+    <meta property="og:description" content="Immersive agricultural heritage experiences in Ghana">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Happy Birthday, Angie!</h1>
-        </header>
-        <section class="animation">
-            <img src="Balloon.png" alt="Balloon" id="balloon">
-        </section>
-        <section id="countdown"></section>
-        <section class="gallery">
-            <h2 class="heading">Memorable Moments</h2>
-            <div class="photos-container">
-                <div class="photos" id="photo1">
-                    <img src="photo1.jpg" alt="Photo 1">
-                    <h2>Self Love</h2>
-                    <h3><p>Taking pictures for my guy</p></h3>
-                </div>
-                <div class="photos" id="cake">
-                    <img src="Cake.jpeg" alt="Photo 2">
-                    <h2>Birthday Cake</h2>
-                    <h3><p>Birthday cake is ready</p></h3>
-                </div>
-                <div class="photos" id="photo3">
-                    <img src="photo3.jpg" alt="Photo 3">
-                    <h2>Missing My Guy</h2>
-                    <h3><p>Taking pictures for my guy after my new hair style</p></h3>
-                </div>
-                <div class="photos" id="denasty1">
-                    <img src="1.jpg" alt="Photo 4">
-                    <h2>Fun Moments</h2>
-                    <h3><p>My first date at Denasty Hotel</p></h3>
-                </div>
-                <div class="photos" id="denasty3">
-                    <img src="denasty3.jpeg" alt="Photo 5">
-                    <h2>Fun Moments</h2>
-                    <h3><p>My first date at Denasty Hotel</p></h3>
-                </div>              
-                
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><i class="icon-plant"></i> FarmStay Ghana</a>
             </div>
-        </section>
-        <section id="count-down-video" style="display: none;">
-            <h2 class="heading">Specially made for me</h2>
-            <div class="video-container">
-                <video controls class="video-content" id="video1">
-                    <source src="Angie, my happiness.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <video controls class="video-content" id="video2">
-                    <source src="Angela it's your day.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#experiences" class="nav-link">Experiences</a></li>
+                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="dashboard.html" class="nav-link">My Account</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link nav-admin">Admin</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
 
-                <div class="design" id="backbround">
-                    <h3>Happy <br><span>Bir<span class="inner">th</span>day</span></h3>
-                    <div class="inner-design" id="forebround"><p><span class="miss">Miss</span> Angela</p></div>
-                    <p class="card-wishes">Today, on your special day, I want to remind you just how incredibly special you are to me. 
-                        You bring so much joy, love, and light into my life, and I am eternally grateful for every 
-                        moment we share together.</p>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Connect with Ghana's Agricultural Heritage</h1>
+            <p>Immersive farm-stay experiences that transform visitors and sustain farming families</p>
+            <button class="cta-button" onclick="scrollToSection('experiences')">Explore Experiences</button>
+        </div>
+        <div class="hero-video">
+            <div class="video-placeholder">🌱 [Farm Scenic Video Coming Soon]</div>
+        </div>
+    </section>
 
-                     <p class="card-wishes">May your birthday be filled with all the happiness your heart can hold, and may all your 
-                        dreams come true. I look forward to celebrating many more birthdays with you, making beautiful 
-                        memories, and cherishing our love forever.</p>
+    <!-- Why Agri-Tourism Section -->
+    <section id="why-agri" class="why-section">
+        <h2>Why Agri-Tourism?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon"><i class="icon-plant"></i></div>
+                <h3>Support Farming Families</h3>
+                <p>Generate alternative income for rural communities</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon"><i class="icon-book"></i></div>
+                <h3>Authentic Learning</h3>
+                <p>Understand agricultural cycles firsthand</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon"><i class="icon-handshake"></i></div>
+                <h3>Cultural Exchange</h3>
+                <p>Build meaningful connections with farm families</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon"><i class="icon-globe"></i></div>
+                <h3>Preserve Heritage</h3>
+                <p>Support Ghana's agricultural heritage</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiences Section -->
+    <section id="experiences" class="experiences-section">
+        <h2>Featured Experiences</h2>
+        <div class="experiences-container" id="experiencesContainer">
+            <!-- Dynamically loaded from data.js -->
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <h2>Guest Stories</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"This experience completely changed my perspective on farming. I learned so much and felt genuinely welcomed by the farm family."</p>
+                <div class="testimonial-author">
+                    <strong>Sarah M.</strong>
+                    <span>Toronto, Canada</span>
                 </div>
-                
-                <video controls class="video-content" id="video3">
-                    <source src="Angie.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="image"><img src="Angie.jpeg" alt="image"></div>
+                <div class="rating"><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i></div>
             </div>
-        </section>
-        <section class="videos" style="display: block;">
-            <h2 class="heading">Special Videos</h2>
-            <div class="video-container">
-                <video controls class="video-content" id="video1">
-                    <source src="video1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <video controls class="video-content" id="video2">
-                    <source src="video2.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The cocoa curing workshop was incredible! Best way to spend a weekend. Can't wait to come back."</p>
+                <div class="testimonial-author">
+                    <strong>James K.</strong>
+                    <span>London, UK</span>
+                </div>
+                <div class="rating"><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i></div>
             </div>
-        </section>
-        <section class="messages">
-            <h2 class="heading">Birthday Messages</h2>
-            <div class="message-box">
-                <p>Hey love, I hope you have a fantastic day filled with all your favorite things. Happy Birthday!</p>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"As a diaspora, I felt reconnected to my roots. The farm family's hospitality was extraordinary."</p>
+                <div class="testimonial-author">
+                    <strong>Ama T.</strong>
+                    <span>New York, USA</span>
+                </div>
+                <div class="rating"><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i></div>
             </div>
-            <div class="message-box">
-                <p>Wishing you the happiest of birthdays and all the best for the year ahead!</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="about" class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>FarmStay Ghana</h4>
+                <p>Connecting urban dwellers with authentic agricultural experiences in Ghana.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="icon-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="icon-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="icon-twitter"></i></a>
+                </div>
             </div>
-        </section>
-        <section class="wishes">
-            <h2 class="heading">Wish Angie a Happy Birthday!</h2>
-            <form id="wish-form">
-                <textarea id="wish-text" placeholder="Write your message here..."></textarea>
-                <button type="submit">Send</button>
-            </form>
-            <div id="wishes-display"></div>
-        </section>
-        <section class="contact">
-            <h2 class="heading">Contact</h2>
-            <p>If you have any questions or want to get in touch, please contact me:</p>
-            <p>Email: gaf_tech@outlook.com</p>
-            <p>Phone: +233 (0)545 437 215</p>
-        </section>
-        <footer>
-            <p>&copy; 2024 GAF Tech. All rights reserved.</p>
-        </footer>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#experiences">Browse Experiences</a></li>
+                    <li><a href="dashboard.html">My Bookings</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Policies</h4>
+                <ul>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms & Conditions</a></li>
+                    <li><a href="#cancellation">Cancellation Policy</a></li>
+                    <li><a href="#safety">Safety Guidelines</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get updates on new experiences and farm stories.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email" id="newsletterEmail">
+                    <button onclick="subscribeNewsletter()">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FarmStay Ghana. All rights reserved. Made with 🌾 for sustainable agri-tourism.</p>
+        </div>
+    </footer>
+
+    <!-- Experience Detail Modal -->
+    <div id="experienceModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeModal('experienceModal')">&times;</span>
+            <div id="experienceDetail">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
     </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content modal-booking">
+            <span class="close" onclick="closeModal('bookingModal')">&times;</span>
+            <div class="booking-container" id="bookingContainer">
+                <!-- Booking form steps dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content modal-medium">
+            <div class="success-content">
+                <div class="success-icon"><i class="icon-check"></i></div>
+                <h2>Booking Confirmed!</h2>
+                <p>Confirmation number: <strong id="confirmationNumber"></strong></p>
+                <p>Check your email for booking details and next steps.</p>
+                <div class="success-details" id="successDetails"></div>
+                <button class="cta-button" onclick="closeModal('successModal'); location.href='dashboard.html'">View My Bookings</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
     <script src="script.js"></script>
 </body>
 </html>

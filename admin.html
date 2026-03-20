@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FarmStay Ghana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><i class="icon-plant"></i> FarmStay Ghana</a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="index.html#experiences" class="nav-link">Experiences</a></li>
+                <li class="nav-item"><a href="index.html#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="dashboard.html" class="nav-link">My Account</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link nav-admin">Admin</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <h1>📊 Admin Dashboard</h1>
+        <p>Manage FarmStay operations and bookings</p>
+        <div class="admin-menu">
+            <button class="active" onclick="showSection('analytics')">Analytics</button>
+            <button onclick="showSection('bookings')">Bookings</button>
+            <button onclick="exportBookingsCSV()"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="dashboard-container">
+        <!-- Analytics Section -->
+        <div id="analyticsSection">
+            <h2>Performance Metrics</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Total Revenue</h3>
+                    <div class="value" id="totalRevenue">₵0</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Total Bookings</h3>
+                    <div class="value" id="totalBookings">0</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Top Experience</h3>
+                    <div class="value" id="topExperience" style="font-size: 1.2rem;">-</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Avg. Party Size</h3>
+                    <div class="value" id="avgPartySize">0</div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 2rem;">Quick Stats</h2>
+            <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <p><strong>Last 7 days bookings:</strong> <span id="recentBookings">0</span></p>
+                <p><strong>Pending confirmations:</strong> <span id="pendingCount">0</span></p>
+                <p><strong>Conversion rate:</strong> <span id="conversionRate">-</span></p>
+            </div>
+        </div>
+
+        <!-- Bookings Management Section -->
+        <div id="bookingsSection" style="display: none;">
+            <h2>Manage Bookings</h2>
+            <div id="adminBookingsContainer">
+                <!-- Bookings table loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>FarmStay Ghana</h4>
+                <p>Admin Portal</p>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="index.html">Public Site</a></li>
+                    <li><a href="dashboard.html">User Dashboard</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Report Issue</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Admin</h4>
+                <ul>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Users</a></li>
+                    <li><a href="#" onclick="localStorage.clear(); alert('Data cleared'); location.reload();">Clear All Data</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FarmStay Ghana Admin - Confidential</p>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            setupMobileMenu();
+            initializeAdmin();
+            updateAdminStats();
+        });
+
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('analyticsSection').style.display = 'none';
+            document.getElementById('bookingsSection').style.display = 'none';
+            
+            // Show selected section
+            if (section === 'analytics') {
+                document.getElementById('analyticsSection').style.display = 'block';
+            } else if (section === 'bookings') {
+                document.getElementById('bookingsSection').style.display = 'block';
+            }
+            
+            // Update button states
+            document.querySelectorAll('.admin-menu button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function updateAdminStats() {
+            const bookings = Storage.getBookings();
+            const avgPartySize = bookings.length > 0 
+                ? (bookings.reduce((sum, b) => sum + b.numGuests, 0) / bookings.length).toFixed(1)
+                : 0;
+            
+            const pendingCount = bookings.filter(b => b.status === 'pending').length;
+            const recentBookings = bookings.filter(b => {
+                const bookingDate = new Date(b.bookedAt);
+                const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                return bookingDate > sevenDaysAgo;
+            }).length;
+
+            document.getElementById('avgPartySize').textContent = avgPartySize;
+            document.getElementById('pendingCount').textContent = pendingCount;
+            document.getElementById('recentBookings').textContent = recentBookings;
+            
+            if (bookings.length > 0) {
+                const conversionRate = (bookings.filter(b => b.status === 'confirmed').length / bookings.length * 100).toFixed(1);
+                document.getElementById('conversionRate').textContent = conversionRate + '%';
+            }
+        }
+    </script>
+</body>
+</html>
